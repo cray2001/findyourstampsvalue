@@ -1,0 +1,92 @@
+plugins {
+    id 'java'
+    id "io.qameta.allure" version "2.9.6"
+}
+
+group 'ru.mist'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+    //Генерация GUID для API запросов
+    implementation 'com.stun4j:stun4j-guid-core:2.0.1.1'
+
+    //(Де)сериализация JSON
+    implementation "com.google.code.gson:gson:2.8.8"
+
+    //Selenide
+    implementation 'com.codeborne:selenide-testng:6.12.3'
+    implementation 'com.codeborne:selenide-proxy:6.12.3'
+
+    //Запуск тестов в контейнере
+    //implementation 'org.selenide:selenide-selenoid:2.2.4'
+
+    //Скриншоты всей html-страницы
+    implementation group: 'com.codeborne', name: 'selenide-full-screenshot', version: '6.10.3'
+
+    //DevTool для перехвата API response в UI тестах
+    //implementation "org.seleniumhq.selenium:selenium-devtools-v98:4.1.3"
+    implementation 'org.seleniumhq.selenium:selenium-devtools-v101:4.3.0'
+
+    //Формирование Allure отчетов
+    implementation 'io.qameta.allure:allure-selenide:2.20.0'
+    implementation "io.qameta.allure:allure-testng:2.17.3"
+
+    //TestNG
+    implementation "org.testng:testng:7.4.0"
+    implementation 'org.jetbrains:annotations:20.1.0'
+
+    //Упрощение кода
+    compileOnly "org.projectlombok:lombok:1.18.22"
+    annotationProcessor "org.projectlombok:lombok:1.18.22"
+
+    //PostgreSQL
+    implementation "org.postgresql:postgresql:42.3.0"
+    implementation 'com.oracle.database.jdbc:ojdbc6:11.2.0.4'
+
+    //REST-API
+    implementation "io.rest-assured:rest-assured:4.4.0"
+
+    //Логирование выполнения тестов
+    testImplementation 'ch.qos.logback:logback-classic:1.3.0'
+    implementation 'org.apache.logging.log4j:log4j-core:2.19.0'
+
+    //Создание тестовых данных
+    implementation "com.github.javafaker:javafaker:0.15"
+
+    //Работа с файлами MS Office
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
+
+    //Работа с файлами PDF
+    implementation 'org.apache.pdfbox:pdfbox:2.0.27'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+test.doFirst {
+}
+
+task cleanAllureDir(type: Delete) {
+    delete "build/allure-results"
+}
+
+compileJava {
+    finalizedBy cleanAllureDir
+}
+
+test {
+    String group = System.getProperty('group', 'ALL')
+    useTestNG() {
+        testLogging {
+            events "PASSED", "FAILED", "SKIPPED", "STARTED"
+            showStandardStreams = true
+        }
+        includeGroups group
+    }
+}
