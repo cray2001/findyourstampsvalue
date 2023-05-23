@@ -14,12 +14,14 @@ import com.findyourstampsvalue.aqa.util.AllureScreenShooter;
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
 
-@Listeners(AllureScreenShooter.class)
+//@Listeners(AllureScreenShooter.class)
 public class BaseTest {
     public Logger log= LoggerFactory.getLogger(this.getClass());
 
     @BeforeSuite(alwaysRun = true)
     public void beforeSuite(){
+
+        System.setProperty("chromeoptions.args", "--headless");
 
         log.info("Тест стартовал");
 
