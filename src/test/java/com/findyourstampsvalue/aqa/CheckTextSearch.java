@@ -5,10 +5,10 @@ import io.qameta.allure.Link;
 import org.testng.annotations.Test;
 
 @Feature("FindYourStampValue")
-public class TC1001 extends BaseTest{
+public class CheckTextSearch extends BaseTest{
 
     @Test(description = "Проверка работы текстового поиска ", groups = {"ALL"})
-    @Link(name="checkTextSearch",url="")
+    
     void checkTextSearch(){
 
         openMainPage()
