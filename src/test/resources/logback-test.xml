@@ -5,14 +5,11 @@
 
     <appender name="STDOUT" class="ConsoleAppender">
         <encoder class="PatternLayoutEncoder">
-            <!--pattern>%d{dd.MM.yyyy HH:mm:ss} %-5level %logger{20}.%M %L - %msg%n</pattern-->
             <pattern>%d{HH:mm:ss} %-5level %logger{20}.%M - %msg%n</pattern>
         </encoder>
     </appender>
 
-    <logger name="ru.mist.aqa" level="INFO"/>
-    <!--logger name="com.codeborne.selenide" level="DEBUG"/-->
-
+    <logger name="com.findyourstampsvalue.aqa" level="INFO"/>
     <logger name="org.openqa.selenium.devtools" level="OFF"/>
 
     <root level="ERROR">

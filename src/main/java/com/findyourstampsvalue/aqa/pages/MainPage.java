@@ -17,8 +17,9 @@ public class MainPage extends BasePage<MainPage> {
     @Step("Ввести текст в строку поиска и нажать Enter")
     public SearchResultsPage inputStampDescription() {
 
-        Faker faker = new Faker();
-        String text = faker.harryPotter().character();
+        //Faker faker = new Faker();
+        //String text = faker.harryPotter().character();
+        String text = "stamp";
 
         mainSearch.shouldBe(Condition.visible).sendKeys(text);
         mainSearch.sendKeys(Keys.ENTER);

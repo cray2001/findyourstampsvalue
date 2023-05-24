@@ -19,8 +19,8 @@ public void checkStampsAreFound(){
     Assert.assertTrue(notification.isDisplayed(), "На странице отсутствует 'search-notifications-header'");
     Assert.assertFalse(foundStamps.isEmpty(),"Не найдено ни одной марки");
 
-    log.info("Найдено {} соответствующих марок",foundStamps.size());
-    Allure.addAttachment("Найдено "+foundStamps.size()+" соответствующих марок","");
+    log.info("Открыта страница результатов поиска");
+    Allure.addAttachment("Открыта страница результатов поиска","");
 }
 
 }
