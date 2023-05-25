@@ -25,7 +25,7 @@ public class BaseTest {
 
         log.info("Тест стартовал");
        // Configuration.holdBrowserOpen = true;
-        ScreenShooter.captureSuccessfulTests = true;
+       // ScreenShooter.captureSuccessfulTests = true;
         Configuration.timeout = 30000L;
         Configuration.browserSize = "1840x1080";
         Configuration.browserPosition = "0x0";

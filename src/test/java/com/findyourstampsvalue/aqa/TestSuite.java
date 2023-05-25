@@ -31,7 +31,7 @@ public class TestSuite extends BaseTest {
         WebDriverRunner.setProxy(proxy);
         //open("https://www.showmyip.com/");
 
-        for (int i = 0; i < 10; i++) {
+        //for (int i = 0; i < 10; i++) {
 
         openMainPage()
                 .inputStampDescription()
@@ -40,7 +40,7 @@ public class TestSuite extends BaseTest {
 
         //AllureScreenShooter.takeScreenshot();
         closeWebDriver();
-        }
+        //}
     }
 
     @Step("Прокси: '{0}', страна: '{1}'")
