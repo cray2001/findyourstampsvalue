@@ -21,7 +21,7 @@ public class BaseTest {
     @BeforeSuite(alwaysRun = true)
     public void beforeSuite() {
 
-        //System.setProperty("chromeoptions.args", "--headless");
+        System.setProperty("chromeoptions.args", "--headless");
 
         log.info("Тест стартовал");
        // Configuration.holdBrowserOpen = true;
