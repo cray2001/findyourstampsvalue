@@ -31,19 +31,16 @@ public class TestSuite extends BaseTest {
         WebDriverRunner.setProxy(proxy);
         //open("https://www.showmyip.com/");
 
-        //open("http://findyourstampsvalue.com/");
+        for (int i = 0; i < 10; i++) {
 
-//        sleep(10*1000);
-//        AllureScreenShooter.takeScreenshot();
-//        closeWebDriver();
- 
         openMainPage()
                 .inputStampDescription()
                 .checkStampsAreFound()
-                ;
+        ;
 
-        AllureScreenShooter.takeScreenshot();
+        //AllureScreenShooter.takeScreenshot();
         closeWebDriver();
+        }
     }
 
     @Step("Прокси: '{0}', страна: '{1}'")
