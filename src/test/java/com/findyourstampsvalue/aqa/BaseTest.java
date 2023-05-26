@@ -24,9 +24,9 @@ public class BaseTest {
         System.setProperty("chromeoptions.args", "--headless");
 
         log.info("Тест стартовал");
-       // Configuration.holdBrowserOpen = true;
-       // ScreenShooter.captureSuccessfulTests = true;
-        Configuration.timeout = 30000L;
+
+//        Configuration.holdBrowserOpen = true;
+        Configuration.timeout = 60000L;
         Configuration.browserSize = "1840x1080";
         Configuration.browserPosition = "0x0";
         Configuration.fastSetValue = true;
@@ -66,15 +66,16 @@ public class BaseTest {
         //return proxy;
 
         return new Object[][]{
-                {"95.216.159.12:8080", "Finland Helsinki"},
-                {"128.140.91.201:8080", "Germany"},
-                {"128.140.90.201:8080", "Germany"},
-                {"5.161.206.32:8080", "United States"},
-                {"5.78.89.93:8080", "United States Portland"},
-                {"5.78.69.192:8080", "United States Portland"},
-                {"162.212.156.133:8080", "United States"},
-                {"162.212.158.43:8080", "United States"},
-                {"188.34.152.20:8080", "Germany Erlensee"},
+                {"5.78.81.37:8080", "United States Portland"},
+                {"167.86.99.172:8080", "Germany Nuremberg"},
+                {"135.181.193.60:8080", "Finland Helsinki"},
+                {"5.78.66.168:8080", "United States Portland"},
+                {"138.201.174.153:8080", "Germany"},
+                {"162.212.155.187:8080", "United States"},
+                {"107.152.42.222:8080", "United States Chicago"},
+                {"162.212.154.177:8080", "United States Chicago"},
+                {"162.212.157.23:8080", "United States"},
+                {"162.212.156.132:8080", "United States"},
         };
     }
 
