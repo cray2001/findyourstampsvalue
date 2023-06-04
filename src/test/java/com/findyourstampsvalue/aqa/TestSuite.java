@@ -11,9 +11,7 @@ import org.testng.annotations.Test;
 
 import static com.codeborne.selenide.Selenide.*;
 
-//@Feature("FindYourStampValue")
 public class TestSuite extends BaseTest {
-
 
     @DataProvider(name = "proxyList")
     public Object[][] dataProviderMethod() {
@@ -29,19 +27,37 @@ public class TestSuite extends BaseTest {
         Proxy proxy = new Proxy();
         proxy.setSslProxy(proxyString);
         WebDriverRunner.setProxy(proxy);
-        //open("https://www.showmyip.com/");
 
-        //for (int i = 0; i < 10; i++) {
 
-        openMainPage()
-                .inputStampDescription()
-                .checkStampsAreFound()
+        openLinksPage()
+//                .inputStampDescription()
+//                .checkStampsAreFound()
         ;
 
-        //AllureScreenShooter.takeScreenshot();
-        closeWebDriver();
-        //}
+//        closeWebDriver();
+
     }
+
+    @Test(description = "Проверка работы текстового поиска ", groups = {"ALL"}, dataProvider = "proxyList")
+    void checkImageSearch(String proxyString, String country) {
+
+        log.info("Прокси: '{}', страна: '{}'", proxyString, country);
+        addStep(proxyString, country);
+
+        Proxy proxy = new Proxy();
+        proxy.setSslProxy(proxyString);
+        WebDriverRunner.setProxy(proxy);
+
+
+//        openMainPage()
+//                .inputStampDescription()
+//                .checkStampsAreFound()
+//        ;
+    }
+
+
+
+
 
     @Step("Прокси: '{0}', страна: '{1}'")
     void addStep(String proxyString, String country) {

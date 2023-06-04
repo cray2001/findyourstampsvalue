@@ -11,6 +11,9 @@ import static com.codeborne.selenide.Selenide.*;
 public class SearchResultsPage extends BasePage<SearchResultsPage>{
 
 ElementsCollection foundStamps=$$x("//img[@class='lazy entered loaded']");
+
+
+
 SelenideElement notification=$x("//div[@class='search-notifications-header']");
 
 @Step("Проверить что найдена хотя бы одна марка")

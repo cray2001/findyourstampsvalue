@@ -17,15 +17,14 @@ public class MainPage extends BasePage<MainPage> {
     @Step("Ввести текст в строку поиска и нажать Enter")
     public SearchResultsPage inputStampDescription() {
 
-        //Faker faker = new Faker();
-        //String text = faker.harryPotter().character();
-        String text = "stamp";
+
+        String text = "Air Post: CURTISS JENNY - Inverted";
 
         mainSearch.shouldBe(Condition.visible).sendKeys(text);
         mainSearch.sendKeys(Keys.ENTER);
 
-        log.info("В поле поиска введена строка: '{}'",text);
-        Allure.addAttachment("В поле поиска введена строка: '"+text+"'","");
+        log.info("В поле поиска введена строка: '{}'", text);
+        Allure.addAttachment("В поле поиска введена строка: '" + text + "'", "");
 
         return page(SearchResultsPage.class);
     }
