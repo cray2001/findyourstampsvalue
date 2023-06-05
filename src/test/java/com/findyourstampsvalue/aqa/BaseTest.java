@@ -1,13 +1,16 @@
 package com.findyourstampsvalue.aqa;
 
 import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.WebDriverRunner;
 import com.findyourstampsvalue.aqa.pages.ListOfLinksPage;
 import com.findyourstampsvalue.aqa.util.AllureScreenShooter;
 import com.findyourstampsvalue.aqa.util.HideMe;
 import com.findyourstampsvalue.aqa.util.HideMeItem;
 import com.google.gson.Gson;
+import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
+import org.openqa.selenium.Proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterSuite;
@@ -15,9 +18,13 @@ import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Listeners;
 
 import java.io.*;
-import java.util.List;
-import java.util.Properties;
+import java.nio.file.Files;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.codeborne.selenide.Selenide.open;
 import static com.codeborne.selenide.Selenide.page;
@@ -36,33 +43,26 @@ public class BaseTest {
 
         log.info("Тест стартовал");
 
-        Configuration.holdBrowserOpen = true;
+        Configuration.holdBrowserOpen = false;
         Configuration.timeout = 60000L;
         Configuration.browserSize = "1840x1080";
         Configuration.browserPosition = "0x0";
         Configuration.fastSetValue = true;
         Configuration.pageLoadTimeout = 60000L;
-
-        //fillProxyList();
-
-        /*Properties properties=new Properties();
-        //properties.
-
-        try {
-
-            properties.load(new FileInputStream("config.properties"));
-
-//            String host = properties.getProperty("db.host");
-//            appProps.setProperty("name", "NewAppName"); // update an old value
-
-
-        } catch (IOException e) {
-            log.info("ОШИБКА: Не удалось найти файл 'config.properties'");
-        }*/
     }
 
     @AfterSuite(alwaysRun = true)
     public void afterSuite() {
+
+        File source = new File("config.properties");
+        File dest = new File("./build/allure-results/environment.properties");
+
+        try {
+            Files.copy(source.toPath(), dest.toPath());
+        } catch (IOException e) {
+            log.info("Не удалось скопировать файл 'config.properties' в Allure-отчёт");
+            e.printStackTrace();
+        }
 
         log.info("Тест завершён");
     }
@@ -72,8 +72,8 @@ public class BaseTest {
      * Выбирает 10 (или сколько есть) прокси US из разных городов
      * Выбирает 10 (или сколько есть) из других стран
      */
-    @Step("Заполнить список HTTPS-прокси")
-    public Object[][] fillProxyList() {
+    @Step("Сформировать тестовый данные")
+    public Object[][] getTestData() {
 
 
         Response response = given()
@@ -112,9 +112,9 @@ public class BaseTest {
                 .limit(10)
                 .collect(Collectors.toList());
 
-        for (HideMeItem item : usProxy) {
-            System.out.println(item.toString());
-        }
+//        for (HideMeItem item : usProxy) {
+//            System.out.println(item.toString());
+//        }
 
         List<HideMeItem> otherProxy = proxyList
                 .getHideMeItemList()
@@ -125,54 +125,89 @@ public class BaseTest {
                 .limit(10)
                 .collect(Collectors.toList());
 
-        for (HideMeItem item : otherProxy) {
-            log.info(item.toString());
-        }
+//        for (HideMeItem item : otherProxy) {
+//            log.info(item.toString());
+//        }
+
+        Object[][] proxyArray = new Object[20][3];
+
+        List<HideMeItem> commonList;
+        commonList = Stream.of(usProxy, otherProxy)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+//        System.out.println("commonList");
+//        System.out.println(commonList);
 
         Properties properties = new Properties();
-        Properties temp = new Properties();
 
         try (InputStream in = new FileInputStream("config.properties")) {
             properties.load(in);
-
         } catch (IOException e) {
             log.info("Не удалось прочитать файл: 'config.properties'");
             e.printStackTrace();
         }
 
+        int lastTestRun = Integer.parseInt(properties.getProperty("LAST_TEST_RUN"));
+
+        log.info("LAST_TEST_RUN={}",lastTestRun);
+
+        int p = 0;
+        for (HideMeItem item : commonList) {
+            proxyArray[p][0] = item.getIp() + ":" + item.getPort();
+            proxyArray[p][1] = item.getCountryName() + " (" + item.getCity() + ")";
+            proxyArray[p][2] = Integer.parseInt(properties.getProperty("LAST_TEST_RUN")) + p;
+            p++;
+        }
+
+        lastTestRun = lastTestRun + commonList.size();
+
+        savePropertiesToFile(usProxy, otherProxy, lastTestRun);
+
+        //System.out.println(Arrays.deepToString(proxyArray));
+
+        return proxyArray;
+    }
+
+    @Step("Сохранить настройки в файл")
+    private void savePropertiesToFile(List<HideMeItem> usProxy, List<HideMeItem> otherProxy, int lastTestRun) {
+
         try (FileWriter fw = new FileWriter("config.properties")) {
             String line;
             int j = 0;
-            for (HideMeItem item : usProxy) {
-                //properties.setProperty("US_PROXY_" + j++, item.getIp() + ":" + item.getPort() + " " + item.getCountryName() + " " + item.getCity());
 
-                line = "US_PROXY_" + j++ + "=" + item.getIp() + ":" + item.getPort() + " " + item.getCountryName() + " " + item.getCity()+"\n";
-                //fw.append(line);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+            fw.write("#Time of last test run: " + formatter.format(LocalDateTime.now()) + "\n");
+            fw.write("#\n");
+            fw.write("LAST_TEST_RUN=" + lastTestRun + "\n");
+            fw.write("#\n");
+
+            for (HideMeItem item : usProxy) {
+                line = String.join("",
+                        "US_PROXY_" + j++, "=",
+                        item.getIp(), ":",
+                        item.getPort(), " ",
+                        item.getCountryName(), " (",
+                        item.getCity(), ")\n");
                 fw.write(line);
             }
 
+            fw.write("#\n");
+
             j = 0;
             for (HideMeItem item : otherProxy) {
-                //properties.setProperty("OTHER_PROXY_" + j++, item.getIp() + ":" + item.getPort() + " " + item.getCountryName() + " " + item.getCity());
-
-                line = "OTHER_PROXY_" + j++ + "=" + item.getIp() + ":" + item.getPort() + " " + item.getCountryName() + " " + item.getCity()+"\n";
-                //fw.append(line);
+                line = String.join("",
+                        "OTHER_PROXY_" + j++, "=",
+                        item.getIp(), ":",
+                        item.getPort(), " ",
+                        item.getCountryName(), " (",
+                        item.getCity(), ")\n");
                 fw.write(line);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-//        try (OutputStream out = new FileOutputStream("config.properties")) {
-//            properties.store(out, "Параметры последнего запуска:");
-//
-//        } catch (IOException e) {
-//            log.info("Не удалось записать данные в файл: 'config.properties'");
-//            e.printStackTrace();
-//        }
-
-        return new Object[][]{};
     }
 
     private void addCityNameIfEmpty(HideMeItem item) {
@@ -181,12 +216,25 @@ public class BaseTest {
         }
     }
 
+    @Step("Задать прокси: '{0}', страна: '{1}'")
+    public void setProxy(String proxyString,String country) {
+
+        Proxy proxy = new Proxy();
+        proxy.setSslProxy(proxyString);
+        WebDriverRunner.setProxy(proxy);
+
+        log.info("Прокси: '{}', страна: '{}'", proxyString, country);
+        Allure.addAttachment("Прокси: '" + proxyString + "', страна: '" + country + "'", "");
+    }
+
+
     @Step("Открыть страницу 'findyourstampsvalue.com/stamp/catcode/list'")
-    public ListOfLinksPage openLinksPage() {
+    public void openLinksPage() {
 
-        open("https://findyourstampsvalue.com/stamp/catcode/list");
+        //open("https://findyourstampsvalue.com/stamp/catcode/list");
+        open("https://www.reg.ru/web-tools/myip");
 
-        return page(ListOfLinksPage.class);
+        //return page(ListOfLinksPage.class);
     }
 
 }

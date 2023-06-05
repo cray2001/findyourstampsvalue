@@ -10,7 +10,7 @@ public class TempTest extends BaseTest {
     @Test(groups = {"ALL"})
     void tempTest() {
 
-        fillProxyList();
+        getTestData();
 
     }
 
