@@ -9,7 +9,7 @@ public class TestSuite extends BaseTest {
         return getTestData();
     }
 
-    @Test(description = "Тест доступности 'findyourstampsvalue.com'", groups = {"ALL"}, dataProvider = "testData")
+    @Test(description = "HTTPS-прокси: ", groups = {"ALL"}, dataProvider = "testData")
     void checkWebsiteAvailability(String proxyString, String country, int testRun) {
 
         setProxy(proxyString, country);

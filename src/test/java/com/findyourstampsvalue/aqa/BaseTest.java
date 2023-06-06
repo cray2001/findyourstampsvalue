@@ -129,12 +129,14 @@ public class BaseTest {
             System.out.println(item.toString());
         }
 
-        Object[][] proxyArray = new Object[20][3];
+
 
         List<HideMeItem> commonList;
         commonList = Stream.of(otherProxy, usProxy)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
+
+        Object[][] proxyArray = new Object[commonList.size()][3];
 
         Properties properties = new Properties();
 
