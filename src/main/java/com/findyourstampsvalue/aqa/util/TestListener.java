@@ -8,23 +8,21 @@ import org.slf4j.LoggerFactory;
 import org.testng.ITestResult;
 import org.testng.reporters.ExitCodeListener;
 
-public class AllureScreenShooter extends ExitCodeListener {
-    public static Logger log = LoggerFactory.getLogger(AllureScreenShooter.class);
+public class TestListener extends ExitCodeListener {
+    public static Logger log = LoggerFactory.getLogger(TestListener.class);
 
     public void onTestFailure(final ITestResult result) {
-
-        log.info("AllureScreenShooter.onTestFailure");
-
-        super.onTestFailure(result);
+        //super.onTestFailure(result);
         takeScreenshot();
+        Selenide.closeWebDriver();
+        log.info("Тест провален. Драйвер закрыт.");
     }
 
     public void onTestSuccess(final ITestResult result) {
-
-        log.info("AllureScreenShooter.onTestSuccess");
-
-        super.onTestSuccess(result);
+        //super.onTestSuccess(result);
         takeScreenshot();
+        Selenide.closeWebDriver();
+        log.info("Тест прошёл. Драйвер закрыт.");
     }
 
     @Attachment(value = "Screenshot", type = "image/png", fileExtension = ".png")

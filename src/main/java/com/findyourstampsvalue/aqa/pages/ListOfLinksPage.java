@@ -15,7 +15,7 @@ public class ListOfLinksPage extends BasePage<ListOfLinksPage> {
     SelenideElement findResult=$x("//div[@class='search-notifications-header']");
 
     @Step("Кликнуть по ссылке: '{0}'")
-    public MainPage checkNextLink(int linkIndex) {
+    public SearchResultsPage checkNextLink(int linkIndex) {
 
         int linkCount = linkList.size();
         int index = linkIndex <= linkCount ? linkIndex : linkIndex % linkCount;
@@ -36,7 +36,7 @@ public class ListOfLinksPage extends BasePage<ListOfLinksPage> {
         log.info("Найдено марок: '{}'", result);
         Allure.addAttachment("Найдено марок: '"+result+"'", "");
 
-        return page(MainPage.class);
+        return page(SearchResultsPage.class);
     }
 
 

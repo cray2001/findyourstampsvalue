@@ -1,11 +1,6 @@
 package com.findyourstampsvalue.aqa;
 
-import com.codeborne.selenide.WebDriverRunner;
-import io.qameta.allure.Allure;
-import io.qameta.allure.Step;
-import org.openqa.selenium.Proxy;
-import org.testng.annotations.DataProvider;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 public class TestSuite extends BaseTest {
 
@@ -17,16 +12,28 @@ public class TestSuite extends BaseTest {
     @Test(description = "Тест доступности 'findyourstampsvalue.com'", groups = {"ALL"}, dataProvider = "testData")
     void checkWebsiteAvailability(String proxyString, String country, int testRun) {
 
-        setProxy(proxyString,country);
+        setProxy(proxyString, country);
 
         openLinksPage()
-//                .checkNextLink(testRun)
-//                .inputStampDescription()
-//                .checkStampsAreFound()
+                .checkNextLink(testRun)
+                //.checkSearchByImage()
+                .checkRegistration(testRun)
         ;
-
-        //WebDriverRunner.getWebDriver().close();
     }
 
+    @Test(description = "Тесты без прокси ", groups = {"ALL"}, enabled = false)
+    void checkWithoutProxy() {
+
+        int testRun = 1000;
+
+//        openLinksPage()
+//                .checkNextLink(testRun)
+//                .checkSearchByImage()
+//                .checkRegistration(testRun)
+
+        openMainPage()
+                .checkSearchByImage()
+        ;
+    }
 
 }

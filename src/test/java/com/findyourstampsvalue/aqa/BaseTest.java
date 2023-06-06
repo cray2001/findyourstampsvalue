@@ -1,9 +1,9 @@
 package com.findyourstampsvalue.aqa;
 
-import com.codeborne.selenide.Configuration;
-import com.codeborne.selenide.WebDriverRunner;
+import com.codeborne.selenide.*;
 import com.findyourstampsvalue.aqa.pages.ListOfLinksPage;
-import com.findyourstampsvalue.aqa.util.AllureScreenShooter;
+import com.findyourstampsvalue.aqa.pages.MainPage;
+import com.findyourstampsvalue.aqa.util.TestListener;
 import com.findyourstampsvalue.aqa.util.HideMe;
 import com.findyourstampsvalue.aqa.util.HideMeItem;
 import com.google.gson.Gson;
@@ -13,25 +13,22 @@ import io.restassured.response.Response;
 import org.openqa.selenium.Proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.AfterSuite;
-import org.testng.annotations.BeforeSuite;
-import org.testng.annotations.Listeners;
+import org.testng.annotations.*;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.codeborne.selenide.Selenide.open;
-import static com.codeborne.selenide.Selenide.page;
-import static io.restassured.RestAssured.get;
+import static com.codeborne.selenide.Selenide.*;
 import static io.restassured.RestAssured.given;
 
-@Listeners(AllureScreenShooter.class)
+@Listeners(TestListener.class)
 public class BaseTest {
     public Logger log = LoggerFactory.getLogger(this.getClass());
     int i = 0;
@@ -39,16 +36,17 @@ public class BaseTest {
     @BeforeSuite(alwaysRun = true)
     public void beforeSuite() {
 
-        //System.setProperty("chromeoptions.args", "--headless");
+        System.setProperty("chromeoptions.args", "--headless");
 
-        log.info("Тест стартовал");
+        log.info("Тесты стартовали");
 
-        Configuration.holdBrowserOpen = false;
-        Configuration.timeout = 60000L;
-        Configuration.browserSize = "1840x1080";
-        Configuration.browserPosition = "0x0";
+        Configuration.pageLoadStrategy = "eager";
+        //Configuration.holdBrowserOpen = true;
+        Configuration.timeout = 30000L;
+        //Configuration.browserSize = "1840x1080";
+        //Configuration.browserPosition = "0x0";
         Configuration.fastSetValue = true;
-        Configuration.pageLoadTimeout = 60000L;
+        Configuration.pageLoadTimeout = 30000L;
     }
 
     @AfterSuite(alwaysRun = true)
@@ -64,8 +62,9 @@ public class BaseTest {
             e.printStackTrace();
         }
 
-        log.info("Тест завершён");
+        log.info("Тесты завершены");
     }
+
 
     /**
      * Получает список актуальных HTTPS-прокси от HideMe
@@ -74,7 +73,6 @@ public class BaseTest {
      */
     @Step("Сформировать тестовый данные")
     public Object[][] getTestData() {
-
 
         Response response = given()
                 .contentType("application/json")
@@ -112,9 +110,9 @@ public class BaseTest {
                 .limit(10)
                 .collect(Collectors.toList());
 
-//        for (HideMeItem item : usProxy) {
-//            System.out.println(item.toString());
-//        }
+        for (HideMeItem item : usProxy) {
+            System.out.println(item.toString());
+        }
 
         List<HideMeItem> otherProxy = proxyList
                 .getHideMeItemList()
@@ -125,19 +123,16 @@ public class BaseTest {
                 .limit(10)
                 .collect(Collectors.toList());
 
-//        for (HideMeItem item : otherProxy) {
-//            log.info(item.toString());
-//        }
+        for (HideMeItem item : otherProxy) {
+            System.out.println(item.toString());
+        }
 
         Object[][] proxyArray = new Object[20][3];
 
         List<HideMeItem> commonList;
-        commonList = Stream.of(usProxy, otherProxy)
+        commonList = Stream.of(otherProxy, usProxy)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
-
-//        System.out.println("commonList");
-//        System.out.println(commonList);
 
         Properties properties = new Properties();
 
@@ -150,7 +145,7 @@ public class BaseTest {
 
         int lastTestRun = Integer.parseInt(properties.getProperty("LAST_TEST_RUN"));
 
-        log.info("LAST_TEST_RUN={}",lastTestRun);
+        log.info("LAST_TEST_RUN={}", lastTestRun);
 
         int p = 0;
         for (HideMeItem item : commonList) {
@@ -163,8 +158,6 @@ public class BaseTest {
         lastTestRun = lastTestRun + commonList.size();
 
         savePropertiesToFile(usProxy, otherProxy, lastTestRun);
-
-        //System.out.println(Arrays.deepToString(proxyArray));
 
         return proxyArray;
     }
@@ -217,24 +210,40 @@ public class BaseTest {
     }
 
     @Step("Задать прокси: '{0}', страна: '{1}'")
-    public void setProxy(String proxyString,String country) {
+    public void setProxy(String proxyString, String country) {
 
         Proxy proxy = new Proxy();
         proxy.setSslProxy(proxyString);
         WebDriverRunner.setProxy(proxy);
+        
+
 
         log.info("Прокси: '{}', страна: '{}'", proxyString, country);
         Allure.addAttachment("Прокси: '" + proxyString + "', страна: '" + country + "'", "");
     }
 
+    @Step("Открыть страницу 'findyourstampsvalue.com/stamp/catcode/list'")
+    public ListOfLinksPage openLinksPage() {
+
+        open("https://findyourstampsvalue.com/stamp/catcode/list");
+
+        //Проверка изменения IP в каждом тесте
+        //open("https://pr-cy.ru/browser-details/");
+        //$x("//div[@class='ip-myip']").shouldBe(Condition.visible);
+
+        return page(ListOfLinksPage.class);
+    }
 
     @Step("Открыть страницу 'findyourstampsvalue.com/stamp/catcode/list'")
-    public void openLinksPage() {
+    public MainPage openMainPage() {
 
-        //open("https://findyourstampsvalue.com/stamp/catcode/list");
-        open("https://www.reg.ru/web-tools/myip");
+        open("https://findyourstampsvalue.com");
 
-        //return page(ListOfLinksPage.class);
+        //Проверка изменения IP в каждом тесте
+        //open("https://pr-cy.ru/browser-details/");
+        //$x("//div[@class='ip-myip']").shouldBe(Condition.visible);
+
+        return page(MainPage.class);
     }
 
 }

@@ -85,7 +85,7 @@ public class HideMeItem implements Comparable<HideMeItem> {
 
     @Override
     public String toString() {
-        return String.join(":", countryName, city, String.valueOf(delay));
+        return String.join(":", ip,port,countryName, city, String.valueOf(delay));
     }
 
     @Override

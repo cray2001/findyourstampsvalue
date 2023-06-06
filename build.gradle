@@ -76,7 +76,7 @@ test {
     String group = System.getProperty('group', 'ALL')
     useTestNG() {
         testLogging {
-            events "PASSED", "FAILED", "SKIPPED", "STARTED"
+            //events "PASSED", "FAILED", "SKIPPED", "STARTED"
             showStandardStreams = true
         }
         includeGroups group
