@@ -17,6 +17,7 @@ import org.testng.annotations.*;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -27,6 +28,7 @@ import java.util.stream.Stream;
 
 import static com.codeborne.selenide.Selenide.*;
 import static io.restassured.RestAssured.given;
+import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 @Listeners(TestListener.class)
 public class BaseTest {
@@ -53,12 +55,11 @@ public class BaseTest {
 
     @AfterSuite(alwaysRun = true)
     public void afterSuite() {
-
-        File source = new File("config.properties");
+File source = new File("config.properties");
         File dest = new File("./build/allure-results/environment.properties");
 
         try {
-            Files.copy(source.toPath(), dest.toPath());
+            Files.copy(source.toPath(), dest.toPath(), REPLACE_EXISTING);
         } catch (IOException e) {
             log.info("Не удалось скопировать файл 'config.properties' в Allure-отчёт");
             e.printStackTrace();
@@ -167,7 +168,7 @@ public class BaseTest {
     @Step("Сохранить настройки в файл")
     private void savePropertiesToFile(List<HideMeItem> usProxy, List<HideMeItem> otherProxy, int lastTestRun) {
 
-        try (FileWriter fw = new FileWriter("config.properties")) {
+        try (FileWriter fw = new FileWriter("config.properties", false)) {
             String line;
             int j = 0;
 
