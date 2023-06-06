@@ -147,13 +147,13 @@ public class BaseTest {
 
         int lastTestRun = Integer.parseInt(properties.getProperty("LAST_TEST_RUN"));
 
-        log.info("LAST_TEST_RUN={}", lastTestRun);
+        log.info("Прочитал свойство: LAST_TEST_RUN={}", lastTestRun);
 
         int p = 0;
         for (HideMeItem item : commonList) {
             proxyArray[p][0] = item.getIp() + ":" + item.getPort();
             proxyArray[p][1] = item.getCountryName() + " (" + item.getCity() + ")";
-            proxyArray[p][2] = Integer.parseInt(properties.getProperty("LAST_TEST_RUN")) + p;
+            proxyArray[p][2] = lastTestRun + p;
             p++;
         }
 
@@ -177,6 +177,8 @@ public class BaseTest {
             fw.write("#\n");
             fw.write("LAST_TEST_RUN=" + lastTestRun + "\n");
             fw.write("#\n");
+
+            log.info("Записал свойство: LAST_TEST_RUN={}", lastTestRun);
 
             for (HideMeItem item : usProxy) {
                 line = String.join("",
@@ -203,6 +205,8 @@ public class BaseTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        log.info("Параметры последнего запуска сохранены в 'config.properties'");
     }
 
     private void addCityNameIfEmpty(HideMeItem item) {

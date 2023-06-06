@@ -28,6 +28,9 @@ public class SearchResultsPage extends BasePage<SearchResultsPage> {
 
         String email=  "test"+testRun+"@fysv.com";
 
+        log.info("Регистрируюсь с email: {}", email);
+        Allure.addAttachment("Регистрируюсь с email: '"+email+"'", "");
+
         registrationLink.shouldBe(Condition.visible).click();
 
         log.info("Кликнул по кнопке 'Join'");
