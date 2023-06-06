@@ -17,6 +17,8 @@ public class ListOfLinksPage extends BasePage<ListOfLinksPage> {
     @Step("Кликнуть по ссылке: '{0}'")
     public SearchResultsPage checkNextLink(int linkIndex) {
 
+        linkList.get(0).shouldBe(Condition.exist);
+
         int linkCount = linkList.size();
         int index = linkIndex <= linkCount ? linkIndex : linkIndex % linkCount;
 

@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Selenide.*;
 public class SearchResultsPage extends BasePage<SearchResultsPage> {
 
     SelenideElement registrationLink = $x("//a[@class='join']");
-    SelenideElement buyFreeButton = $x("//span[@data-product-name='Worries free']").sibling(0);
+    SelenideElement buyFreeButton = $x("//span[@data-product-name='Worries free']/button");
 
     SelenideElement signupHeader = $x("//div[contains(text(),'Create account')]");
 

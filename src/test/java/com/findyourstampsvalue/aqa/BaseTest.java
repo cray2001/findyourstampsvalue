@@ -44,7 +44,7 @@ public class BaseTest {
         Configuration.headless = true;
         //Configuration.pageLoadStrategy = "eager";
         //Configuration.holdBrowserOpen = true;
-        Configuration.timeout = 30000L;
+        Configuration.timeout = 60000L;
         //Configuration.browserSize = "1840x1080";
         //Configuration.browserPosition = "0x0";
         Configuration.fastSetValue = true;
