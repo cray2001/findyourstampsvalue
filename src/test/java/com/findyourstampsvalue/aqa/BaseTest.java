@@ -1,23 +1,24 @@
 package com.findyourstampsvalue.aqa;
 
-import com.codeborne.selenide.*;
+import com.codeborne.selenide.Configuration;
+import com.codeborne.selenide.WebDriverRunner;
 import com.findyourstampsvalue.aqa.pages.ListOfLinksPage;
 import com.findyourstampsvalue.aqa.pages.MainPage;
-import com.findyourstampsvalue.aqa.util.TestListener;
 import com.findyourstampsvalue.aqa.util.HideMe;
 import com.findyourstampsvalue.aqa.util.HideMeItem;
+import com.findyourstampsvalue.aqa.util.TestListener;
 import com.google.gson.Gson;
-import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.openqa.selenium.Proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testng.annotations.*;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.Listeners;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -26,7 +27,8 @@ import java.util.Properties;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.page;
 import static io.restassured.RestAssured.given;
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -141,18 +143,19 @@ File source = new File("config.properties");
 
         try (InputStream in = new FileInputStream("config.properties")) {
             properties.load(in);
+
+
         } catch (IOException e) {
             log.info("Не удалось прочитать файл: 'config.properties'");
             e.printStackTrace();
         }
 
         File propertiesFile= new File("config.properties");
-
         log.info("Файл: 'config.properties' удалён - {}",propertiesFile.delete());
 
         int lastTestRun = Integer.parseInt(properties.getProperty("LAST_TEST_RUN"));
 
-        log.info("Прочитал свойство: LAST_TEST_RUN={}", lastTestRun);
+        log.info("Прочитал свойство: LAST_TEST_RUN={}", properties.getProperty("LAST_TEST_RUN"));
 
         int p = 0;
         for (HideMeItem item : commonList) {
@@ -162,7 +165,12 @@ File source = new File("config.properties");
             p++;
         }
 
+        log.info("lastTestRun={}",lastTestRun);
+        log.info("commonList.size()={}",commonList.size());
+
         lastTestRun = lastTestRun + commonList.size();
+
+        log.info("lastTestRun={}",lastTestRun);
 
         savePropertiesToFile(usProxy, otherProxy, lastTestRun);
 
