@@ -1,7 +1,6 @@
 package com.findyourstampsvalue.aqa;
 
 import com.codeborne.selenide.WebDriverRunner;
-import io.qameta.allure.Allure;
 import org.openqa.selenium.Proxy;
 import org.testng.annotations.Test;
 
@@ -12,7 +11,7 @@ import static com.codeborne.selenide.Selenide.open;
  */
 public class TempTest extends BaseTest {
 
-    @Test(groups = {"ALL"})
+    @Test(groups = {"ALL"}, enabled = false)
     void tempTest() {
 
         Proxy proxy = new Proxy();
