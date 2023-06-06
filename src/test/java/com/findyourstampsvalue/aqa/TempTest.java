@@ -11,14 +11,14 @@ import static com.codeborne.selenide.Selenide.open;
  */
 public class TempTest extends BaseTest {
 
-    @Test(groups = {"ALL"}, enabled = false)
-    void tempTest() {
-
-        Proxy proxy = new Proxy();
-        proxy.setSslProxy("41.76.145.18:8080");
-        WebDriverRunner.setProxy(proxy);
-
-        open("https://pr-cy.ru/browser-details/");
-    }
+//    @Test(groups = {"ALL"}, enabled = false)
+//    void tempTest() {
+//
+//        Proxy proxy = new Proxy();
+//        proxy.setSslProxy("41.76.145.18:8080");
+//        WebDriverRunner.setProxy(proxy);
+//
+//        open("https://pr-cy.ru/browser-details/");
+//    }
 
 }

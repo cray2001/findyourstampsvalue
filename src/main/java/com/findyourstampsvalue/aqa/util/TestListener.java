@@ -13,14 +13,14 @@ public class TestListener extends ExitCodeListener {
 
     public void onTestFailure(final ITestResult result) {
         //super.onTestFailure(result);
-        takeScreenshot();
+        //takeScreenshot();
         Selenide.closeWebDriver();
         log.info("Тест провален. Драйвер закрыт.");
     }
 
     public void onTestSuccess(final ITestResult result) {
         //super.onTestSuccess(result);
-        takeScreenshot();
+        //takeScreenshot();
         Selenide.closeWebDriver();
         log.info("Тест прошёл. Драйвер закрыт.");
     }

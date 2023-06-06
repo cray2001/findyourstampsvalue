@@ -36,11 +36,13 @@ public class BaseTest {
     @BeforeSuite(alwaysRun = true)
     public void beforeSuite() {
 
-        System.setProperty("chromeoptions.args", "--headless");
-
+        //System.setProperty("chromeoptions.args", "--headless");
         log.info("Тесты стартовали");
 
-        Configuration.pageLoadStrategy = "eager";
+        Configuration.savePageSource = false;
+        Configuration.screenshots = false;
+        Configuration.headless = true;
+        //Configuration.pageLoadStrategy = "eager";
         //Configuration.holdBrowserOpen = true;
         Configuration.timeout = 30000L;
         //Configuration.browserSize = "1840x1080";
@@ -84,7 +86,7 @@ public class BaseTest {
         String jsonString = response.asPrettyString().replaceAll("<.+?>", "");
         jsonString = String.join("", "{\"hideme\":", jsonString, "}");
 
-        log.info("JSON после обработки: {}",jsonString);
+        //log.info("JSON после обработки: {}",jsonString);
 
         Gson gson = new Gson();
         HideMe proxyList = gson.fromJson(jsonString, HideMe.class);
@@ -215,7 +217,6 @@ public class BaseTest {
         Proxy proxy = new Proxy();
         proxy.setSslProxy(proxyString);
         WebDriverRunner.setProxy(proxy);
-        
 
 
         log.info("Прокси: '{}', страна: '{}'", proxyString, country);

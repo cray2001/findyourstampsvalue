@@ -20,20 +20,4 @@ public class TestSuite extends BaseTest {
                 .checkRegistration(testRun)
         ;
     }
-
-    @Test(description = "Тесты без прокси ", groups = {"ALL"}, enabled = false)
-    void checkWithoutProxy() {
-
-        int testRun = 1000;
-
-//        openLinksPage()
-//                .checkNextLink(testRun)
-//                .checkSearchByImage()
-//                .checkRegistration(testRun)
-
-        openMainPage()
-                .checkSearchByImage()
-        ;
-    }
-
 }
