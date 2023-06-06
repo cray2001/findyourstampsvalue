@@ -57,7 +57,7 @@ public class BaseTest {
 
     @AfterSuite(alwaysRun = true)
     public void afterSuite() {
-File source = new File("config.properties");
+        File source = new File("config.properties");
         File dest = new File("./build/allure-results/environment.properties");
 
         try {
@@ -144,12 +144,9 @@ File source = new File("config.properties");
         try (InputStream in = new FileInputStream("config.properties")) {
             properties.load(in);
         } catch (IOException e) {
-            log.info("Не удалось прочитать файл: 'config.properties'");
-            e.printStackTrace();
+            log.info("Не удалось прочитать файл: 'config.properties', LAST_TEST_RUN=700");
+            properties.setProperty("LAST_TEST_RUN", "1000");
         }
-
-//        File propertiesFile= new File("config.properties");
-//        log.info("Файл: 'config.properties' удалён - {}",propertiesFile.delete());
 
         int lastTestRun = Integer.parseInt(properties.getProperty("LAST_TEST_RUN"));
 
