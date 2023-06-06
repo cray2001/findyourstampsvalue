@@ -144,8 +144,8 @@ public class BaseTest {
         try (InputStream in = new FileInputStream("config.properties")) {
             properties.load(in);
         } catch (IOException e) {
-            log.info("Не удалось прочитать файл: 'config.properties', LAST_TEST_RUN=700");
-            properties.setProperty("LAST_TEST_RUN", "1000");
+            log.info("Не удалось прочитать файл: 'config.properties', LAST_TEST_RUN=1100");
+            properties.setProperty("LAST_TEST_RUN", "1100");
         }
 
         int lastTestRun = Integer.parseInt(properties.getProperty("LAST_TEST_RUN"));
