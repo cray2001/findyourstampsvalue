@@ -77,7 +77,7 @@ public class BaseTest {
         Response response = given()
                 .contentType("application/json")
                 .when()
-                .get("http://justapi.info/api/proxylist.php?out=js&maxtime=1000&type=s");
+                .get("http://justapi.info/api/proxylist.php?out=js&maxtime=1000&type=s&code=958218285534530");
 
         //log.info("Ответ от justapi: {}",response.asPrettyString());
 
