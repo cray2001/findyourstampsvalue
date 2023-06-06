@@ -10,7 +10,7 @@ import static com.codeborne.selenide.Selenide.*;
 public class SearchResultsPage extends BasePage<SearchResultsPage> {
 
     SelenideElement registrationLink = $x("//a[@class='join']");
-    SelenideElement buyFreeButton = $x("//span[@data-product-name='Worries free']/button");
+    SelenideElement buyFreeButton = $x("//span[@data-product-name='Worries free']/following-sibling::button");
 
     SelenideElement signupHeader = $x("//div[contains(text(),'Create account')]");
 
@@ -30,13 +30,27 @@ public class SearchResultsPage extends BasePage<SearchResultsPage> {
 
         registrationLink.shouldBe(Condition.visible).click();
 
+        log.info("Кликнул по кнопке 'Join'");
+        Allure.addAttachment("Кликнул по кнопке 'Join'", "");
+
         buyFreeButton.shouldBe(Condition.exist).click();
+
+        log.info("Кликнул по кнопке 'Worries free'");
+        Allure.addAttachment("Кликнул по кнопке 'Worries free'", "");
+
         signupHeader.shouldBe(Condition.appear);
+
+        log.info("Заголовок 'Create account' появился");
+        Allure.addAttachment("Заголовок 'Create account' появился", "");
+
         emailInput.shouldBe(Condition.visible).sendKeys(email);
         passInput.shouldBe(Condition.visible).sendKeys("QdenU@5Dzx");
         passRepeatButton.shouldBe(Condition.visible).sendKeys("QdenU@5Dzx");
 
         signupButton.shouldBe(Condition.visible).click();
+
+        log.info("Кликнул по кнопке 'Sign up'");
+        Allure.addAttachment("Кликнул по кнопке 'Sign up'", "");
 
         searchHeader.shouldBe(Condition.appear);
 
