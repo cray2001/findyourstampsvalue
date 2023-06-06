@@ -48,7 +48,7 @@ public class BaseTest {
         //Configuration.browserSize = "1840x1080";
         //Configuration.browserPosition = "0x0";
         Configuration.fastSetValue = true;
-        Configuration.pageLoadTimeout = 30000L;
+        Configuration.pageLoadTimeout = 60000L;
     }
 
     @AfterSuite(alwaysRun = true)
@@ -128,8 +128,6 @@ public class BaseTest {
         for (HideMeItem item : otherProxy) {
             System.out.println(item.toString());
         }
-
-
 
         List<HideMeItem> commonList;
         commonList = Stream.of(otherProxy, usProxy)
@@ -222,7 +220,7 @@ public class BaseTest {
 
 
         log.info("Прокси: '{}', страна: '{}'", proxyString, country);
-        Allure.addAttachment("Прокси: '" + proxyString + "', страна: '" + country + "'", "");
+        //Allure.addAttachment("Прокси: '" + proxyString + "', страна: '" + country + "'", "");
     }
 
     @Step("Открыть страницу 'findyourstampsvalue.com/stamp/catcode/list'")
