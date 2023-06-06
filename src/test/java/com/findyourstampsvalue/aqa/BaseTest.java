@@ -146,6 +146,10 @@ File source = new File("config.properties");
             e.printStackTrace();
         }
 
+        File propertiesFile= new File("config.properties");
+
+        log.info("Файл: 'config.properties' удалён - {}",propertiesFile.delete());
+
         int lastTestRun = Integer.parseInt(properties.getProperty("LAST_TEST_RUN"));
 
         log.info("Прочитал свойство: LAST_TEST_RUN={}", lastTestRun);
