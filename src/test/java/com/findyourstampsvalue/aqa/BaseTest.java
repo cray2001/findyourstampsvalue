@@ -143,7 +143,8 @@ File source = new File("config.properties");
 
         try (InputStream in = new FileInputStream("config.properties")) {
             properties.load(in);
-
+            System.out.println("Только что прочитанные свойства -");
+            properties.list(System.out);
 
         } catch (IOException e) {
             log.info("Не удалось прочитать файл: 'config.properties'");
