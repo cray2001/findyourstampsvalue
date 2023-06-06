@@ -71,7 +71,7 @@ public class BaseTest {
      * Выбирает 10 (или сколько есть) прокси US из разных городов
      * Выбирает 10 (или сколько есть) из других стран
      */
-    @Step("Сформировать тестовый данные")
+    @Step("Сформировать тестовые данные")
     public Object[][] getTestData() {
 
         Response response = given()
@@ -84,7 +84,7 @@ public class BaseTest {
         String jsonString = response.asPrettyString().replaceAll("<.+?>", "");
         jsonString = String.join("", "{\"hideme\":", jsonString, "}");
 
-        //log.info("После RegEx-a: {}",jsonString);
+        log.info("JSON после обработки: {}",jsonString);
 
         Gson gson = new Gson();
         HideMe proxyList = gson.fromJson(jsonString, HideMe.class);
