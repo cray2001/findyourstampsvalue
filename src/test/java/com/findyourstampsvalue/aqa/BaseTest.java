@@ -143,16 +143,13 @@ File source = new File("config.properties");
 
         try (InputStream in = new FileInputStream("config.properties")) {
             properties.load(in);
-            System.out.println("Только что прочитанные свойства -");
-            properties.list(System.out);
-
         } catch (IOException e) {
             log.info("Не удалось прочитать файл: 'config.properties'");
             e.printStackTrace();
         }
 
-        File propertiesFile= new File("config.properties");
-        log.info("Файл: 'config.properties' удалён - {}",propertiesFile.delete());
+//        File propertiesFile= new File("config.properties");
+//        log.info("Файл: 'config.properties' удалён - {}",propertiesFile.delete());
 
         int lastTestRun = Integer.parseInt(properties.getProperty("LAST_TEST_RUN"));
 
@@ -166,12 +163,7 @@ File source = new File("config.properties");
             p++;
         }
 
-        log.info("lastTestRun={}",lastTestRun);
-        log.info("commonList.size()={}",commonList.size());
-
         lastTestRun = lastTestRun + commonList.size();
-
-        log.info("lastTestRun={}",lastTestRun);
 
         savePropertiesToFile(usProxy, otherProxy, lastTestRun);
 
@@ -191,8 +183,6 @@ File source = new File("config.properties");
             fw.write("#\n");
             fw.write("LAST_TEST_RUN=" + lastTestRun + "\n");
             fw.write("#\n");
-
-            log.info("Записал свойство: LAST_TEST_RUN={}", lastTestRun);
 
             for (HideMeItem item : usProxy) {
                 line = String.join("",
@@ -219,8 +209,6 @@ File source = new File("config.properties");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        log.info("Параметры последнего запуска сохранены в 'config.properties'");
     }
 
     private void addCityNameIfEmpty(HideMeItem item) {

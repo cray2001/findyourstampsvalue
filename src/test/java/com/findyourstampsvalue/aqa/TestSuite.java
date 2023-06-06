@@ -12,12 +12,12 @@ public class TestSuite extends BaseTest {
     @Test(description = "HTTPS-прокси: ", groups = {"ALL"}, dataProvider = "testData")
     void checkWebsiteAvailability(String proxyString, String country, int testRun) {
 
-/*        setProxy(proxyString, country);
+        setProxy(proxyString, country);
 
         openLinksPage()
                 .checkNextLink(testRun)
                 //.checkSearchByImage()
                 .checkRegistration(testRun)
-        ;*/
+        ;
     }
 }
