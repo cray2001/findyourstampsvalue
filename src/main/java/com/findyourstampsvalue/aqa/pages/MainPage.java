@@ -2,15 +2,14 @@ package com.findyourstampsvalue.aqa.pages;
 
 import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
-import com.github.javafaker.Faker;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Step;
-import org.openqa.selenium.Keys;
 import org.testng.Assert;
 
 import java.io.File;
 
-import static com.codeborne.selenide.Selenide.*;
+import static com.codeborne.selenide.Selenide.$x;
+import static com.codeborne.selenide.Selenide.page;
 
 public class MainPage extends BasePage<MainPage> {
 

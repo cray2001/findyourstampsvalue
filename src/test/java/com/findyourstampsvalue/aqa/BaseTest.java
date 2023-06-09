@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import io.qameta.allure.Step;
 import io.restassured.response.Response;
 import org.openqa.selenium.Proxy;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.AfterSuite;
@@ -19,6 +20,7 @@ import org.testng.annotations.Listeners;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
@@ -40,7 +42,6 @@ public class BaseTest {
     @BeforeSuite(alwaysRun = true)
     public void beforeSuite() {
 
-        //System.setProperty("chromeoptions.args", "--headless");
         log.info("Тесты стартовали");
 
         Configuration.savePageSource = false;
@@ -53,6 +54,16 @@ public class BaseTest {
         //Configuration.browserPosition = "0x0";
         Configuration.fastSetValue = true;
         Configuration.pageLoadTimeout = 60000L;
+
+        ChromeOptions options = new ChromeOptions();
+        options.addArguments("--remote-allow-origins=*");
+        options.addArguments("--headless=new");
+        options.addArguments("--disable-web-security");
+        options.addArguments("--no-sandbox");
+        options.addArguments("--disable-dev-shm-usage");
+        options.addArguments("--disable-gpu");
+        options.addArguments("--allow-running-insecure-content");
+        Configuration.browserCapabilities.setCapability(ChromeOptions.CAPABILITY, options);
     }
 
     @AfterSuite(alwaysRun = true)
@@ -70,10 +81,9 @@ public class BaseTest {
         log.info("Тесты завершены");
     }
 
-
     /**
-     * Получает список актуальных HTTPS-прокси от HideMe
-     * Выбирает 10 (или сколько есть) прокси US из разных городов
+     * Получает список актуальных HTTPS-прокси от HideMe.
+     * Выбирает 10 (или сколько есть) прокси US из разных городов.
      * Выбирает 10 (или сколько есть) из других стран
      */
     @Step("Сформировать тестовые данные")
@@ -82,7 +92,8 @@ public class BaseTest {
         Response response = given()
                 .contentType("application/json")
                 .when()
-                .get("http://justapi.info/api/proxylist.php?out=js&maxtime=2000&type=s&code=958218285534530");
+               .get("http://justapi.info/api/proxylist.php?out=js&maxtime=1500&type=s&code=958218285534530");
+
 
         //log.info("Ответ от justapi: {}",response.asPrettyString());
 
@@ -95,6 +106,43 @@ public class BaseTest {
         HideMe proxyList = gson.fromJson(jsonString, HideMe.class);
 
         log.info("Получено: {} HTTPS прокси", proxyList.getHideMeItemList().size());
+
+        //List<HideMeItem> commonList=tenPlusTen(proxyList);
+        List<HideMeItem> commonList= fastest(proxyList);
+
+        Object[][] proxyArray = new Object[commonList.size()][3];
+
+        Properties properties = new Properties();
+
+        try (InputStream in = Files.newInputStream(Paths.get("config.properties"))) {
+            properties.load(in);
+        } catch (IOException e) {
+            log.info("Не удалось прочитать файл: 'config.properties', LAST_TEST_RUN=1100");
+            properties.setProperty("LAST_TEST_RUN", "1100");
+        }
+
+        int lastTestRun = Integer.parseInt(properties.getProperty("LAST_TEST_RUN"));
+
+        log.info("Прочитал свойство: LAST_TEST_RUN={}", properties.getProperty("LAST_TEST_RUN"));
+
+        int p = 0;
+        for (HideMeItem item : commonList) {
+            proxyArray[p][0] = item.getIp() + ":" + item.getPort();
+            proxyArray[p][1] = item.getCountryName() + " (" + item.getCity() + ")";
+            proxyArray[p][2] = lastTestRun + p;
+            p++;
+        }
+
+        lastTestRun = lastTestRun + commonList.size();
+
+        savePropertiesToFile(commonList, lastTestRun);
+
+        return proxyArray;
+    }
+
+    public List<HideMeItem> tenPlusTen(HideMe proxyList) {
+
+        List<HideMeItem> result = null;
 
         //Поделить список на два: US и другие.
         //Из списка US выбрать 10 самых быстрых из разных городов, если нет 10 то сколько есть.
@@ -132,43 +180,36 @@ public class BaseTest {
             System.out.println(item.toString());
         }
 
-        List<HideMeItem> commonList;
-        commonList = Stream.of(otherProxy, usProxy)
+        result = Stream.of(otherProxy, usProxy)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
 
-        Object[][] proxyArray = new Object[commonList.size()][3];
-
-        Properties properties = new Properties();
-
-        try (InputStream in = new FileInputStream("config.properties")) {
-            properties.load(in);
-        } catch (IOException e) {
-            log.info("Не удалось прочитать файл: 'config.properties', LAST_TEST_RUN=1100");
-            properties.setProperty("LAST_TEST_RUN", "1100");
-        }
-
-        int lastTestRun = Integer.parseInt(properties.getProperty("LAST_TEST_RUN"));
-
-        log.info("Прочитал свойство: LAST_TEST_RUN={}", properties.getProperty("LAST_TEST_RUN"));
-
-        int p = 0;
-        for (HideMeItem item : commonList) {
-            proxyArray[p][0] = item.getIp() + ":" + item.getPort();
-            proxyArray[p][1] = item.getCountryName() + " (" + item.getCity() + ")";
-            proxyArray[p][2] = lastTestRun + p;
-            p++;
-        }
-
-        lastTestRun = lastTestRun + commonList.size();
-
-        savePropertiesToFile(usProxy, otherProxy, lastTestRun);
-
-        return proxyArray;
+        return result;
     }
 
+    public List<HideMeItem> fastest(HideMe proxyList) {
+
+        //Выбрать 20 самых быстрых и разных прокси с минимальным временем проверки, если нет 10 то сколько есть.
+
+        List<HideMeItem> result = proxyList
+                .getHideMeItemList()
+                .stream()
+//                .filter(item -> !item.getCountryCode().equals("US"))
+                .sorted()
+                .distinct()
+                .limit(20)
+                .collect(Collectors.toList());
+
+        for (HideMeItem item : result) {
+            System.out.println(item.toString());
+        }
+
+        return result;
+    }
+
+
     @Step("Сохранить настройки в файл")
-    private void savePropertiesToFile(List<HideMeItem> usProxy, List<HideMeItem> otherProxy, int lastTestRun) {
+    private void savePropertiesToFile(List<HideMeItem> proxy, int lastTestRun) {
 
         try (FileWriter fw = new FileWriter("config.properties", false)) {
             String line;
@@ -181,9 +222,9 @@ public class BaseTest {
             fw.write("LAST_TEST_RUN=" + lastTestRun + "\n");
             fw.write("#\n");
 
-            for (HideMeItem item : usProxy) {
+            for (HideMeItem item : proxy) {
                 line = String.join("",
-                        "US_PROXY_" + j++, "=",
+                        "PROXY_" + j++, "=",
                         item.getIp(), ":",
                         item.getPort(), " ",
                         item.getCountryName(), " (",
@@ -191,7 +232,7 @@ public class BaseTest {
                 fw.write(line);
             }
 
-            fw.write("#\n");
+/*            fw.write("#\n");
 
             j = 0;
             for (HideMeItem item : otherProxy) {
@@ -202,7 +243,7 @@ public class BaseTest {
                         item.getCountryName(), " (",
                         item.getCity(), ")\n");
                 fw.write(line);
-            }
+            }*/
         } catch (IOException e) {
             e.printStackTrace();
         }
