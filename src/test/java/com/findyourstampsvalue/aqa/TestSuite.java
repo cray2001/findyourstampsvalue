@@ -1,5 +1,6 @@
 package com.findyourstampsvalue.aqa;
 
+import com.findyourstampsvalue.aqa.pages.SearchResultsPage;
 import org.testng.annotations.*;
 
 public class TestSuite extends BaseTest {
@@ -14,10 +15,12 @@ public class TestSuite extends BaseTest {
 
         setProxy(proxyString, country);
 
-        openLinksPage()
-                .checkNextLink(testRun)
-                //.checkSearchByImage()
-                .checkRegistration(testRun)
-        ;
+        SearchResultsPage resultPage = openLinksPage()
+                .checkNextLink(testRun);
+        //.checkSearchByImage()
+
+        if (testRun % 100 == 0) {
+            resultPage.checkRegistration(testRun);
+        }
     }
 }

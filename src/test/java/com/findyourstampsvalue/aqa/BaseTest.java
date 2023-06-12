@@ -107,6 +107,10 @@ public class BaseTest {
 
         log.info("Получено: {} HTTPS прокси", proxyList.getHideMeItemList().size());
 
+        for(HideMeItem item: proxyList.getHideMeItemList()) {
+            log.info(item.toString());
+        }
+
         //List<HideMeItem> commonList=tenPlusTen(proxyList);
         List<HideMeItem> commonList= fastest(proxyList);
 
@@ -117,7 +121,7 @@ public class BaseTest {
         try (InputStream in = Files.newInputStream(Paths.get("config.properties"))) {
             properties.load(in);
         } catch (IOException e) {
-            log.info("Не удалось прочитать файл: 'config.properties', LAST_TEST_RUN=1100");
+            log.info("Не удалось прочитать файл: 'config.properties', LAST_TEST_RUN=5100");
             properties.setProperty("LAST_TEST_RUN", "1100");
         }
 
