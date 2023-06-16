@@ -92,7 +92,7 @@ public class BaseTest {
         Response response = given()
                 .contentType("application/json")
                 .when()
-               .get("http://justapi.info/api/proxylist.php?out=js&maxtime=1500&type=s&code=958218285534530");
+                .get("http://justapi.info/api/proxylist.php?out=js&maxtime=1500&type=s&code=958218285534530");
 
 
         //log.info("Ответ от justapi: {}",response.asPrettyString());
@@ -107,12 +107,12 @@ public class BaseTest {
 
         log.info("Получено: {} HTTPS прокси", proxyList.getHideMeItemList().size());
 
-        for(HideMeItem item: proxyList.getHideMeItemList()) {
+        for (HideMeItem item : proxyList.getHideMeItemList()) {
             log.info(item.toString());
         }
 
         //List<HideMeItem> commonList=tenPlusTen(proxyList);
-        List<HideMeItem> commonList= fastest(proxyList);
+        List<HideMeItem> commonList = fastest(proxyList);
 
         Object[][] proxyArray = new Object[commonList.size()][3];
 
@@ -155,6 +155,8 @@ public class BaseTest {
         List<HideMeItem> usProxy = proxyList
                 .getHideMeItemList()
                 .stream()
+                .filter(item -> item.getCountryName() != null)
+                .filter(item -> item.getCity() != null)
                 .filter(item -> item.getCountryCode().equals("US"))
                 .sorted()
                 .peek(this::addCityNameIfEmpty)
@@ -174,6 +176,8 @@ public class BaseTest {
         List<HideMeItem> otherProxy = proxyList
                 .getHideMeItemList()
                 .stream()
+                .filter(item -> item.getCountryName() != null)
+                .filter(item -> item.getCity() != null)
                 .filter(item -> !item.getCountryCode().equals("US"))
                 .sorted()
                 .distinct()
@@ -198,7 +202,8 @@ public class BaseTest {
         List<HideMeItem> result = proxyList
                 .getHideMeItemList()
                 .stream()
-//                .filter(item -> !item.getCountryCode().equals("US"))
+                .filter(item -> item.getCountryName() != null)
+                .filter(item -> item.getCity() != null)
                 .sorted()
                 .distinct()
                 .limit(20)
