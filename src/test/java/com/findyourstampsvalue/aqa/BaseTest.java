@@ -279,7 +279,7 @@ public class BaseTest {
     @Step("Открыть страницу 'findyourstampsvalue.com/stamp/catcode/list'")
     public ListOfLinksPage openLinksPage() {
 
-        open("https://findyourstampsvalue.com/stamp/catcode/list");
+        open("https://findyourstampsvalue.com/stamp/catcode/list/usa");
 
         //Проверка изменения IP в каждом тесте
         //open("https://pr-cy.ru/browser-details/");
